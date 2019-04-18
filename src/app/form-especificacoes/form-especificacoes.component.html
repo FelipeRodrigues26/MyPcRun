@@ -1,0 +1,166 @@
+<div id="informativo" *ngIf="isOpen || viewResult" >
+  <img src="assets/img/informativo.png" class="card-img-top" >
+  <div class="card-body">
+    <h5 class="card-title">Checagem de Hardware</h5>
+    <p class="card-text">Com nossa checagem de Hardware, você verifica se seu computador tem capacidade
+      suficiente para rodar determinados Jogos ou Softwares escolhidos por você.</p>
+  </div>
+</div>
+<div *ngIf="!viewResult" class="formulario" [@openClose]="isOpen ? 'open' : 'closed'">
+
+    <div class="form-group">
+      <div class="col-sm-12">
+        <label for="processador" class="control-label"><i class="fas fa-microchip"
+            style="font-size:18px; width: 30px"></i>PROCESSADOR</label>
+        <input id="processador" class="form-control" type="text" matInput [formControl]="processadorControl"
+          [matAutocomplete]="autoProcessador" placeholder="Insira seu processador" [readonly]="!isOpen" 
+          (focus) = "setComponenteFiltrado(processadores)" >
+        <mat-autocomplete #autoProcessador="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let processador of filteredProcessadores | async" [value]="processador">
+                      {{processador.nome}}
+          </mat-option>
+        </mat-autocomplete>
+        
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-sm-12">
+        <label for="placa" class="control-label"><i class="fas fa-tv" style="font-size:18px; width: 30px"></i>PLACA DE
+          VIDEO</label>
+        <input id="placa" class="form-control" type="text" matInput [formControl]="placaControl" [matAutocomplete]="autoPlaca"
+          placeholder="Insira sua placa de vídeo" [readonly]="!isOpen" (focus) = "setComponenteFiltrado(placas)">
+        <mat-autocomplete #autoPlaca="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let placa of filteredPlacas | async" [value]="placa">
+            
+            {{placa.nome}}
+          </mat-option>
+        </mat-autocomplete>
+
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-12">
+        <label for="memoria" class="control-label"><i class="fas fa-memory"
+            style="font-size:18px; width: 30px"></i>MEMÓRIA</label>
+        <input id="memoria" class="form-control" type="text" matInput [formControl]="memoriaControl"
+          [matAutocomplete]="autoMemoria" placeholder="Insira sua memória" [readonly]="!isOpen"
+          (focus) = "setComponenteFiltrado(memorias)">
+        <mat-autocomplete #autoMemoria="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let memoria of filteredMemorias | async" [value]="memoria">  
+            {{memoria.nome}}
+          </mat-option>
+        </mat-autocomplete>
+
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-sm-12">
+        <label for="so" class="control-label"><i class="fas fa-hdd" style="font-size:18px; width: 30px"></i>SISTEMA
+          OPERACIONAL</label>
+        <input id="so" class="form-control" type="text" matInput [formControl]="soControl" [matAutocomplete]="autoSo"
+          placeholder="Insira seu S.O" [readonly]="!isOpen" (focus) = "setComponenteFiltrado(sos)">
+        <mat-autocomplete #autoSo="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let so of filteredSos | async" [value]="so">
+            {{so.nome}}
+          </mat-option>
+        </mat-autocomplete>
+
+      </div>
+    </div>
+      
+    <div class="form-group">
+        <div class="col-sm-12">
+          <input class="buttonStyle" type="submit" value="{{isOpen?'VER MEU PODER':'ALTERAR'}}" (click)="toggle()">
+        </div>
+    </div>
+    
+
+</div>
+
+<ngb-carousel id="publicidade" *ngIf="images">
+  <ng-template ngbSlide>
+    <img [src]="images[0]" alt="Random first slide">
+  </ng-template>
+  <ng-template ngbSlide>
+    <img [src]="images[1]" alt="Random second slide">
+  </ng-template>
+  <ng-template ngbSlide>
+    <img [src]="images[2]" alt="Random second slide">
+  </ng-template>
+</ngb-carousel>      
+
+
+<div id="escolha" class="card"  *ngIf="!isOpen && !viewResult">
+  <img src="assets/img/logo.PNG" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">O que deseja executar?</h5>
+    <label for="cat" class="control-label"><i class="fas fa-user-secret"
+        style="font-size:18px; width: 30px"></i>Categoria</label>
+    <select class="form-control" id="cat" name="cat" [(ngModel)]="catSelecionada" (change)="onChangeSelect()">
+      <option value='games'>Games</option>
+      <option value='programas'>Programas</option>
+      <option value='outros'>Outros</option>
+    </select><br>
+    <label for="descricao" class="control-label"><i class="fas fa-user-secret"
+        style="font-size:18px; width: 30px"></i>Descrição</label>
+    <input id="descricao" class="form-control" type="text" matInput [formControl]="itemControl" [matAutocomplete]="autoEscolha"
+      placeholder="Insira algo" (focus)="setComponenteFiltrado(itens)">
+    <mat-autocomplete #autoEscolha="matAutocomplete" [displayWith]="displayFn">
+      <mat-option *ngFor="let item of filteredItens | async" [value]="item">
+        <span><img src="assets/img/icon/{{item.nome}}.png"></span>
+        {{item.nome}}
+      </mat-option>
+    </mat-autocomplete><br>
+
+    <button class="btn btn-primary" (click)="onViewResult()">Pronto</button>
+  </div>
+</div>
+
+<div id="resultado" *ngIf="viewResult && !isOpen">
+  <ul class="list-unstyled">
+    <li class="media">
+      <img src="assets/img/ok.png" class="mr-3" alt="...">
+      <div class="media-body">
+        <h5 class="mt-0 mb-1">Processador</h5>
+        <p>Requisito mínimo: Intel Core i3-2100 / AMD Phenom II X4 965 or better
+          <br>Recomendado: Intel i3 6300T or equivalent
+          <br>Você informou: {{processadorControl.value.score}}</p>
+      </div>
+    </li>
+    <li class="media">
+      <img src="assets/img/erro.png" class="mr-3" alt="...">
+      <div class="media-body">
+        <h5 class="mt-0 mb-1">Gráfico</h5>
+        <p>Requisito mínimo: 1 GB NVIDIA GeForce GTX 460 / AMD Radeon R7 260
+          <br>Recomendado: 2 GB NVIDIA GeForce GTX 670 or AMD Radeon R9 270X
+          <br>Você informou: {{placaControl.value.nome}}</p>
+      </div>
+    </li>
+    <li class="media">
+      <img src="assets/img/erro.png" class="mr-3" alt="...">
+      <div class="media-body">
+        <h5 class="mt-0 mb-1">Memória</h5>
+        <p>Requisito mínimo: 8.0 GB
+          <br>Recomendado: 8.0 GB
+          <br>Você informou: {{memoriaControl.value.nome}}</p>
+      </div>
+    </li>
+    <li class="media">
+      <img src="assets/img/ok.png" class="mr-3" alt="...">
+      <div class="media-body">
+        <h5 class="mt-0 mb-1">Sistema Operacional</h5>
+        <p>Requisito mínimo: Windows 10 - 64-Bit
+          <br>Recomendado: Windows 10 - 64-Bit
+          <br>Você informou: {{soControl.value.nome}}<br>
+      </div>
+    </li>
+    <li>
+        <button class="buttonStyle" (click)="toggle()">Nova checagem</button>
+        
+    </li>
+  </ul>
+  
+</div>
+
